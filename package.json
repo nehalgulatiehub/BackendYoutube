@@ -2,15 +2,27 @@
   "name": "youtubebackend",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "keywords": [
     "js",
     "backend"
   ],
   "license": "ISC",
   "author": "Nehalgulati",
-  "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "prettier": "^3.8.0"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.4"
   }
 }
