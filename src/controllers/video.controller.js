@@ -116,7 +116,25 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params
-  //TODO: get video by id
+  if (!mongoose.isValidObjectId(videoId)) {
+    throw new ApiError(400, 'Invalid videoId')
+  }
+  const video = await Video.findById(videoId).populate(
+    'owner',
+    'username avatar'
+  )
+  if (!video) {
+    throw new ApiError(404, 'Video not found')
+  }
+
+  if (!video.isPublished) {
+    if (!req.user || video.owner._id.toString() !== req.user._id.toString()) {
+      throw new ApiError(403, 'Access Denied')
+    }
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, 'Video fetched successfully'))
 })
 
 const updateVideo = asyncHandler(async (req, res) => {
