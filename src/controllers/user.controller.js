@@ -2,6 +2,7 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 import { ApiError } from '../utils/apiError.js'
 import { User } from '../models/user.models.js'
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
+import mongoose from 'mongoose'
 
 import jwt from 'jsonwebtoken'
 
@@ -233,7 +234,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body
-  if (!fullName || !email) {
+  if (!(fullName || email)) {
     throw new ApiError(400, 'All fields are required')
   }
 
@@ -331,13 +332,13 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
           $size: '$subscribers',
         },
         channelsSubscribedCount: {
-          $size: 'subscribedTo',
+          $size: '$subscribedTo',
         },
         isSubscribed: {
-          $condition: {
+          $cond: {
             if: { $in: [req.user?._id, '$subscribers.subscriber'] },
             then: true,
-            elese: false,
+            else: false,
           },
         },
       },
