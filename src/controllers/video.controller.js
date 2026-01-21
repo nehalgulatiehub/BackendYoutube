@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 import { User } from '../models/user.models.js'
 import { Video } from '../models/video.models.js'
 import { ApiError } from '../utils/apiError.js'
@@ -67,8 +67,51 @@ const getAllVideos = asyncHandler(async (req, res) => {
 })
 
 const publishAVideo = asyncHandler(async (req, res) => {
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, 'Unauthorised Request')
+  }
   const { title, description } = req.body
-  // TODO: get video, upload to cloudinary, create video
+
+  const videoFile = req.files.videoFile[0]
+  const thumbnail = req.files.thumbnail[0]
+
+  if (!videoFile) {
+    throw new ApiError(400, 'Unable to get video file Please upload again')
+  }
+  if (!thumbnail) {
+    throw new ApiError(400, 'Please upload thumbnail')
+  }
+
+  if (!title || title.trim() === '') {
+    throw new ApiError(400, 'title is required')
+  }
+  const videoUploaded = await uploadOnCloudinary(videoFile.path)
+  if (!videoUploaded || !videoUploaded.url) {
+    throw new ApiError(500, 'Video not uploaded successfully')
+  }
+  const thumbnailUploaded = await uploadOnCloudinary(thumbnail.path)
+  if (!thumbnailUploaded || !thumbnailUploaded.url) {
+    throw new ApiError(500, 'Thumbnail not uploaded successfully')
+  }
+  const video = await Video.create({
+    title,
+    description,
+    owner: req.user._id,
+    duration: videoUploaded.duration,
+    isPublished: false,
+    videoFile: {
+      url: videoUploaded.url,
+      public_id: videoUploaded.url,
+    },
+    thumbnail: {
+      url: thumbnailUploaded.url,
+      public_id: thumbnailUploaded.url,
+    },
+  })
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, { video }, 'Video saved draft successfully'))
 })
 
 const getVideoById = asyncHandler(async (req, res) => {
@@ -88,6 +131,34 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, 'Invalid Authorization')
+  }
+  const isVideoValid = mongoose.isValidObjectId(videoId)
+  if (!isVideoValid) {
+    throw new ApiError(400, 'Invalid Video ID')
+  }
+  const video = await Video.findById(videoId)
+  if (!video) {
+    throw new ApiError(404, 'Video Not found')
+  }
+  if (video.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, 'You are not allowed to modify this video')
+  }
+  video.isPublished = !video.isPublished
+  await video.save()
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        video,
+        video.isPublished
+          ? 'Video Published Successfully'
+          : 'Video unpublished Successfully',
+        'Toggle Done'
+      )
+    )
 })
 
 export {
