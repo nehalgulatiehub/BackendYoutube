@@ -140,11 +140,93 @@ const getVideoById = asyncHandler(async (req, res) => {
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params
   //TODO: update video details like title, description, thumbnail
+
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, 'Unauthrorized Access')
+  }
+  if (!mongoose.isValidObjectId(videoId)) {
+    throw new ApiError(403, 'Invalid Video ID')
+  }
+  const video = await Video.findById(videoId)
+  if (!video) {
+    throw new ApiError(404, 'Video not found')
+  }
+  if (req.user._id.toString() !== video.owner._id.toString()) {
+    throw new ApiError(403, 'Unauthorized Access')
+  }
+
+  const { title, description } = req.body
+  const thumbnail = req.files?.thumbnail[0]
+  if (!(title || description || thumbnail)) {
+    throw new ApiError(400, 'Nothing to update')
+  }
+
+  if (thumbnail) {
+    const thumbnailUploaded = await uploadOnCloudinary(thumbnail.path)
+    if (!thumbnailUploaded || !thumbnailUploaded.url) {
+      throw new ApiError(500, 'Thumbnail not updated Server Error')
+    }
+    video.thumbnail = {
+      url: thumbnailUploaded.url,
+      public_id: thumbnailUploaded.public_id,
+    }
+  }
+  if (title.trim() !== '') {
+    video.title = title.trim()
+  }
+  if (description.trim() !== '') {
+    video.description = description.trim()
+  }
+  if (!description.trim() === '') {
+    throw new ApiError(401, 'Description is required')
+  }
+  await video.save()
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, 'Video updated successfully'))
 })
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params
-  //TODO: delete video
+
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, 'User not logged IN')
+  }
+  if (!mongoose.isValidObjectId(videoId)) {
+    throw new ApiError(400, 'Video ID is not valid')
+  }
+  const video = await Video.findById(videoId)
+  if (!video) {
+    throw new ApiError(404, 'Video Not Found')
+  }
+  if (video.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, 'Invalid Access')
+  }
+
+  if (video.videoFile?.public_id) {
+    const videoDeleteResult = await cloudinary.uploader.destroy(
+      video.videoFile.public_id,
+      {
+        resource_type: 'video',
+      }
+    )
+    if (videoDeleteResult.result !== 'ok') {
+      throw new ApiError(500, 'Failed to delete video from cloudinary')
+    }
+  }
+  if (video.thumbnail?.public_id) {
+    const thumbnailDeleteResult = await cloudinary.uploader.destroy(
+      video.thumbnail.public_id
+    )
+    if (thumbnailDeleteResult.result !== 'ok') {
+      throw new ApiError(500, 'Failed to delete thumbnail from cloudinary')
+    }
+  }
+  await Video.deleteOne()
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, 'Video deleted successfully'))
 })
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
