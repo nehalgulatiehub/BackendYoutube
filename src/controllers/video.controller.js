@@ -5,6 +5,7 @@ import { ApiError } from '../utils/apiError.js'
 import { ApiResponse } from '../utils/apiResponse.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
+import { v2 as cloudinary } from 'cloudinary'
 
 //api goal is to get all videos
 
@@ -28,8 +29,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
     if (!mongoose.isValidObjectId(userId)) {
       throw new ApiError(400, 'Invalid User ID')
     }
+    filter.owner = userId
   }
-  filter.owner = userId
 
   if (query) {
     filter.$or = [
@@ -128,6 +129,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   }
 
   if (!video.isPublished) {
+    // Only allow owner to view unpublished videos
     if (!req.user || video.owner._id.toString() !== req.user._id.toString()) {
       throw new ApiError(403, 'Access Denied')
     }
@@ -222,7 +224,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
       throw new ApiError(500, 'Failed to delete thumbnail from cloudinary')
     }
   }
-  await Video.deleteOne()
+  await Video.deleteOne({ _id: videoId })
 
   return res
     .status(200)

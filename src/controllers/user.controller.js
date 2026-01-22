@@ -201,7 +201,7 @@ const requestAccessToken = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie('accessToken', accessToken, options)
-    .cookie('refreshtoken', newRefreshToken, options)
+    .cookie('refreshToken', newRefreshToken, options)
     .json(
       new ApiResponse(
         200,
@@ -413,7 +413,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        user[0].watchHistroy,
+        user[0].watchHistory,
         'Watch history fetched successfully'
       )
     )

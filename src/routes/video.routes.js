@@ -11,11 +11,16 @@ import { verifyJWT } from '../middlewares/auth.middleware.js'
 import { upload } from '../middlewares/multer.middleware.js'
 
 const router = Router()
-router.use(verifyJWT) // Apply verifyJWT middleware to all routes in this file
+
+// Public routes - no authentication required
+router.route('/').get(getAllVideos)
+router.route('/:videoId').get(getVideoById)
+
+// Protected routes - authentication required
+router.use(verifyJWT) // Apply verifyJWT middleware to routes below
 
 router
   .route('/')
-  .get(getAllVideos)
   .post(
     upload.fields([
       {
@@ -32,7 +37,6 @@ router
 
 router
   .route('/:videoId')
-  .get(getVideoById)
   .delete(deleteVideo)
   .patch(upload.single('thumbnail'), updateVideo)
 

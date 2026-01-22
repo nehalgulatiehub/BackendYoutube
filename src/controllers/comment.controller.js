@@ -60,9 +60,12 @@ const addComment = asyncHandler(async (req, res) => {
     video: videoId,
     owner: req.user._id,
   })
+  
+  const populatedComment = await Comment.findById(comment._id).populate('owner', 'username avatar')
+  
   return res
     .status(200)
-    .json(new ApiResponse(200, comment, 'Comment done successfully'))
+    .json(new ApiResponse(200, populatedComment, 'Comment done successfully'))
 })
 
 const updateComment = asyncHandler(async (req, res) => {
