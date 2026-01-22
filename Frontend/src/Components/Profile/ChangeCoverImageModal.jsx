@@ -9,10 +9,6 @@ function ChangeCoverImageModal({ onClose, onSave }) {
   }
 
   const handleSave = async () => {
-    if (!coverImage) {
-      alert('Please select a cover image')
-      return
-    }
     setIsSubmitting(true)
     await onSave(coverImage)
     setIsSubmitting(false)

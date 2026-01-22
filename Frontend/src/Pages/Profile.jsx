@@ -66,11 +66,7 @@ function Profile() {
     const formData = new FormData()
     formData.append('coverImage', coverImage)
     try {
-      await axiosInstance.patch('/users/cover-image', formData, {
-        headers: {
-          'Content-Type': undefined,
-        },
-      })
+      await axiosInstance.patch('/users/cover-image', formData)
       fetchUser()
       toast.success('Cover image changed successfully')
     } catch (error) {
