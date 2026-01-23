@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser'
 const app = express()
 app.use(
   cors({
-    origin: 'https://playtube-video-streaming-platform.vercel.app/',
+    origin: 'https://playtube-video-streaming-platform.vercel.app',
     credentials: true,
   })
 )
