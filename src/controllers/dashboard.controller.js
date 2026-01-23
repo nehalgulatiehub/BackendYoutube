@@ -3,7 +3,7 @@ import { Video } from '../models/video.models.js'
 import { Subscription } from '../models/subscriptions.models.js'
 import { Like } from '../models/likes.models.js'
 import { ApiError } from '../utils/apiError.js'
-import { apiResponse } from '../utils/apiResponse.js'
+import { ApiResponse } from '../utils/apiResponse.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
 /**

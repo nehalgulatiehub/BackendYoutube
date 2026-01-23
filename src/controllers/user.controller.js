@@ -6,7 +6,7 @@ import mongoose from 'mongoose'
 
 import jwt from 'jsonwebtoken'
 
-import { apiResponse } from '../utils/apiResponse.js'
+import { ApiResponse } from '../utils/apiResponse.js'
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
