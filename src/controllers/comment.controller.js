@@ -28,7 +28,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
   const TotalCommentCount = await Comment.countDocuments({ video: videoId })
   return res.status(200).json(
-    new apiResponse(
+    new ApiResponse(
       200,
       {
         comments,
@@ -68,7 +68,7 @@ const addComment = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, populatedComment, 'Comment done successfully'))
+    .json(new ApiResponse(200, populatedComment, 'Comment done successfully'))
 })
 
 const updateComment = asyncHandler(async (req, res) => {
@@ -96,7 +96,7 @@ const updateComment = asyncHandler(async (req, res) => {
   await comment.save()
   return res
     .status(200)
-    .json(new apiResponse(200, comment, 'Comment is updated'))
+    .json(new ApiResponse(200, comment, 'Comment is updated'))
 })
 
 const deleteComment = asyncHandler(async (req, res) => {
@@ -117,7 +117,7 @@ const deleteComment = asyncHandler(async (req, res) => {
   await comment.deleteOne()
   return res
     .status(200)
-    .json(new apiResponse(200, null, 'Comment deleted successfully'))
+    .json(new ApiResponse(200, null, 'Comment deleted successfully'))
 })
 
 export { getVideoComments, addComment, updateComment, deleteComment }

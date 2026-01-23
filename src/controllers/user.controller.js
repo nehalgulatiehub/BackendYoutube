@@ -89,7 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   return res
     .status(201)
-    .json(new apiResponse(200, createdUser, 'User Registered Successfully'))
+    .json(new ApiResponse(200, createdUser, 'User Registered Successfully'))
 })
 
 //req body
@@ -136,7 +136,7 @@ const loginUser = asyncHandler(async (req, res) => {
     .cookie('accessToken', accessToken, options)
     .cookie('refreshToken', refreshToken, options)
     .json(
-      new apiResponse(
+      new ApiResponse(
         200,
         { user: loggedInUser, accessToken, refreshToken },
         'User logged in successfully'
@@ -167,7 +167,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     .status(200)
     .clearCookie('accessToken', cookieOptions)
     .clearCookie('refreshToken', cookieOptions)
-    .json(new apiResponse(200, {}, 'User logged out'))
+    .json(new ApiResponse(200, {}, 'User logged out'))
 })
 
 const requestAccessToken = asyncHandler(async (req, res) => {
@@ -203,7 +203,7 @@ const requestAccessToken = asyncHandler(async (req, res) => {
     .cookie('accessToken', accessToken, options)
     .cookie('refreshToken', newRefreshToken, options)
     .json(
-      new apiResponse(
+      new ApiResponse(
         200,
         { accessToken, refreshToken: newRefreshToken },
         'Access Token Refreshed'
@@ -223,13 +223,13 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, {}, 'Password changed successfully'))
+    .json(new ApiResponse(200, {}, 'Password changed successfully'))
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(new apiResponse(200, req.user, 'Current User Fetched Successfully'))
+    .json(new ApiResponse(200, req.user, 'Current User Fetched Successfully'))
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -251,7 +251,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, user, 'Account details updated sucessfully'))
+    .json(new ApiResponse(200, user, 'Account details updated sucessfully'))
 })
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
@@ -275,7 +275,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     { new: true }
   ).select('-password')
 
-  return res.status(200).json(new apiResponse(200, user, 'Avatar is updated'))
+  return res.status(200).json(new ApiResponse(200, user, 'Avatar is updated'))
 })
 
 const updatecoverImage = asyncHandler(async (req, res) => {
@@ -296,7 +296,7 @@ const updatecoverImage = asyncHandler(async (req, res) => {
     },
     { new: true }
   ).select('-password')
-  return res.status(200).json(new apiResponse(200, user, 'Cover Image updated'))
+  return res.status(200).json(new ApiResponse(200, user, 'Cover Image updated'))
 })
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
@@ -363,7 +363,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, channel[0], 'User channel fetched succesfully'))
+    .json(new ApiResponse(200, channel[0], 'User channel fetched succesfully'))
 })
 
 const getWatchHistory = asyncHandler(async (req, res) => {
@@ -411,7 +411,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new apiResponse(
+      new ApiResponse(
         200,
         user[0].watchHistory,
         'Watch history fetched successfully'

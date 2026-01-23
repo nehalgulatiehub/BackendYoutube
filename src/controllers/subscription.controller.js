@@ -50,7 +50,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new apiResponse(
+      new ApiResponse(
         200,
         { subscribed },
         subscribed ? 'Subscribed successfully' : 'Unsubscribed successfully'
@@ -76,7 +76,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, subscribers, 'Subscribers fetched successfully'))
+    .json(new ApiResponse(200, subscribers, 'Subscribers fetched successfully'))
 })
 
 // controller to return channel list to which user has subscribed
@@ -97,7 +97,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new apiResponse(
+        new ApiResponse(
           200,
           { isSubscribed: !!subscription },
           'Subscription status fetched successfully'
@@ -115,7 +115,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new apiResponse(200, channels, 'Subscribed channels fetched successfully')
+      new ApiResponse(200, channels, 'Subscribed channels fetched successfully')
     )
 })
 

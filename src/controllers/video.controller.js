@@ -59,7 +59,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new apiResponse(
+      new ApiResponse(
         200,
         { video, page, limit, totalVideos },
         'Videos Fetched Successfully'
@@ -112,7 +112,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new apiResponse(201, { video }, 'Video saved draft successfully'))
+    .json(new ApiResponse(201, { video }, 'Video saved draft successfully'))
 })
 
 const getVideoById = asyncHandler(async (req, res) => {
@@ -136,7 +136,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new apiResponse(200, video, 'Video fetched successfully'))
+    .json(new ApiResponse(200, video, 'Video fetched successfully'))
 })
 
 const updateVideo = asyncHandler(async (req, res) => {
@@ -185,7 +185,7 @@ const updateVideo = asyncHandler(async (req, res) => {
   await video.save()
   return res
     .status(200)
-    .json(new apiResponse(200, video, 'Video updated successfully'))
+    .json(new ApiResponse(200, video, 'Video updated successfully'))
 })
 
 const deleteVideo = asyncHandler(async (req, res) => {
@@ -228,7 +228,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, null, 'Video deleted successfully'))
+    .json(new ApiResponse(200, null, 'Video deleted successfully'))
 })
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
@@ -252,7 +252,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new apiResponse(
+      new ApiResponse(
         200,
         video,
         video.isPublished

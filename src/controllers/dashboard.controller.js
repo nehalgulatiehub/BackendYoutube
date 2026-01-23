@@ -41,7 +41,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 
   //  Respond
   return res.status(200).json(
-    new apiResponse(
+    new ApiResponse(
       200,
       {
         totalVideos,
@@ -74,7 +74,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
   // 3️⃣ Respond
   return res
     .status(200)
-    .json(new apiResponse(200, videos, 'Channel videos fetched successfully'))
+    .json(new ApiResponse(200, videos, 'Channel videos fetched successfully'))
 })
 
 export { getChannelStats, getChannelVideos }
