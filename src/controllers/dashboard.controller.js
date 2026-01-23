@@ -3,7 +3,7 @@ import { Video } from '../models/video.models.js'
 import { Subscription } from '../models/subscriptions.models.js'
 import { Like } from '../models/likes.models.js'
 import { ApiError } from '../utils/apiError.js'
-import { ApiResponse } from '../utils/apiResponse.js'
+import { apiResponse } from '../utils/apiResponse.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
 /**
@@ -41,7 +41,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 
   //  Respond
   return res.status(200).json(
-    new ApiResponse(
+    new apiResponse(
       200,
       {
         totalVideos,
@@ -74,7 +74,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
   // 3️⃣ Respond
   return res
     .status(200)
-    .json(new ApiResponse(200, videos, 'Channel videos fetched successfully'))
+    .json(new apiResponse(200, videos, 'Channel videos fetched successfully'))
 })
 
 export { getChannelStats, getChannelVideos }

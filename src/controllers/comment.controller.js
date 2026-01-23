@@ -3,7 +3,7 @@ import { Comment } from '../models/comment.model.js'
 import { ApiError } from '../utils/apiError.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { Video } from '../models/video.models.js'
-import { ApiResponse } from '../utils/apiResponse.js'
+import { apiResponse } from '../utils/apiResponse.js'
 const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
   const { videoId } = req.params
@@ -28,7 +28,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
   const TotalCommentCount = await Comment.countDocuments({ video: videoId })
   return res.status(200).json(
-    new ApiResponse(
+    new apiResponse(
       200,
       {
         comments,
@@ -60,12 +60,15 @@ const addComment = asyncHandler(async (req, res) => {
     video: videoId,
     owner: req.user._id,
   })
-  
-  const populatedComment = await Comment.findById(comment._id).populate('owner', 'username avatar')
-  
+
+  const populatedComment = await Comment.findById(comment._id).populate(
+    'owner',
+    'username avatar'
+  )
+
   return res
     .status(200)
-    .json(new ApiResponse(200, populatedComment, 'Comment done successfully'))
+    .json(new apiResponse(200, populatedComment, 'Comment done successfully'))
 })
 
 const updateComment = asyncHandler(async (req, res) => {
@@ -93,7 +96,7 @@ const updateComment = asyncHandler(async (req, res) => {
   await comment.save()
   return res
     .status(200)
-    .json(new ApiResponse(200, comment, 'Comment is updated'))
+    .json(new apiResponse(200, comment, 'Comment is updated'))
 })
 
 const deleteComment = asyncHandler(async (req, res) => {
@@ -114,7 +117,7 @@ const deleteComment = asyncHandler(async (req, res) => {
   await comment.deleteOne()
   return res
     .status(200)
-    .json(new ApiResponse(200, null, 'Comment deleted successfully'))
+    .json(new apiResponse(200, null, 'Comment deleted successfully'))
 })
 
 export { getVideoComments, addComment, updateComment, deleteComment }

@@ -2,7 +2,7 @@ import mongoose, { isValidObjectId } from 'mongoose'
 import { Like } from '../models/likes.models.js'
 import { Video } from '../models/video.models.js'
 import { ApiError } from '../utils/apiError.js'
-import { ApiResponse } from '../utils/apiResponse.js'
+import { apiResponse } from '../utils/apiResponse.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
@@ -30,7 +30,11 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { isLiked: liked }, liked ? 'Video Liked' : 'Video Unliked')
+      new apiResponse(
+        200,
+        { isLiked: liked },
+        liked ? 'Video Liked' : 'Video Unliked'
+      )
     )
 })
 
@@ -57,7 +61,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(
+      new apiResponse(
         200,
         { isLiked: liked },
         liked ? 'Comment Liked' : 'Comment unliked'
@@ -88,7 +92,11 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { isLiked: liked }, liked ? 'Tweet Liked' : 'Tweet unliked')
+      new apiResponse(
+        200,
+        { isLiked: liked },
+        liked ? 'Tweet Liked' : 'Tweet unliked'
+      )
     )
 })
 
@@ -106,7 +114,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 
   const videoIds = likes.map((like) => like.video)
   if (videoIds.length === 0) {
-    return res.status(200).json(new ApiResponse(200, [], 'No liked vide found'))
+    return res.status(200).json(new apiResponse(200, [], 'No liked vide found'))
   }
   const videos = await Video.find({
     _id: { $in: videoIds },
@@ -115,7 +123,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, videos, 'Like videos fetched successfully '))
+    .json(new apiResponse(200, videos, 'Like videos fetched successfully '))
 })
 
 export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos }
